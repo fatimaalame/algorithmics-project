@@ -5,3 +5,4 @@ __pycache__/
 .env
 researchdata/
 Yareta_data_download/
+data/merged.csv
