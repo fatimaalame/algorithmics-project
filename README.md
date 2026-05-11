@@ -27,3 +27,4 @@ projet_AA/
 ├── .gitignore
 ├── README.md
 └── requirements.txt
+```
