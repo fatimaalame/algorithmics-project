@@ -24,7 +24,7 @@ I'm working with real smartwatch data (provided by the uni) and using Python to 
 The participant with the highest 10k step goal achievement rate is participant 7359, with a success rate of 94.83%.
 
 
-# Analysis 2 — Top 5 Active Days per Participant
+# Analysis 2: Top 5 active days per participant
 
 ## Problem
 - Find the top 5 most active days for each participant
