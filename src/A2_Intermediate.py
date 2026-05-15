@@ -11,6 +11,9 @@ def group_days_by_participant(df):
         participant = row["participant_id"]
         date = row["DATE"]
         steps = row["ACTIVITY_steps"]
+        # Skip missing step values
+        if steps != steps:
+            continue
 
         #if first time see this participant then create an empty list
         if participant not in days_by_participant:
@@ -61,3 +64,62 @@ def top_k_days_baseline(df, k=5):
         top_days[participant] = sorted_days[:k]
 
     return top_days
+
+
+def find_smallest_day_index(days):
+    #Find the index of the day with the smallest number of steps
+    smallest_index = 0
+
+    for i in range(1, len(days)):
+        if days[i][1] < days[smallest_index][1]:
+            smallest_index = i
+
+    return smallest_index
+
+
+def insert_day_descending(top_days, new_day):
+    #Insert a new day in descending order by step count
+    #This inserts a day into a small sorted list btw
+    top_days.append(new_day)
+
+    current_index = len(top_days) - 1
+    day_to_insert = top_days[current_index]
+    scan_index = current_index - 1
+
+    while scan_index >= 0 and top_days[scan_index][1] < day_to_insert[1]:
+        top_days[scan_index + 1] = top_days[scan_index]
+        scan_index = scan_index - 1
+
+    top_days[scan_index + 1] = day_to_insert
+
+    return top_days
+
+
+def top_k_days_improved(df, k=5):
+    #First, group the days by participant
+    days_by_participant = group_days_by_participant(df)
+
+    #This dictionary will store the top k days for each participant
+    result = {}
+
+    #Go through every participant one by one
+    for participant in days_by_participant:
+        days = days_by_participant[participant]
+        current_top = [] #best 5 dayz for one person // key variable
+
+        #Scan the days without sorting the whole list
+        for day in days:
+            if len(current_top) < k:
+                current_top = insert_day_descending(current_top, day)
+            else:
+                smallest_index = find_smallest_day_index(current_top)
+
+                #If the new day is better than the smallest top day -> replace it
+                if day[1] > current_top[smallest_index][1]:
+                    current_top.pop(smallest_index)
+                    current_top = insert_day_descending(current_top, day)
+
+        result[participant] = current_top
+
+    return result
+
