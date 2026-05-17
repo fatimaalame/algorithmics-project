@@ -59,3 +59,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Alias for compatibility
+load_data = load_participant_data    
