@@ -19,7 +19,7 @@ I'm working with real smartwatch data (provided by the uni) and using Python to 
 | How I tested | I tested the function on a small fake dataset where the expected result can be calculated by hand but I also tested it on the real merged dataset and checked that the final percentage is between 0 and 100. |
 | Python file | [Analysis/A1_Beginner.py](Analysis/A1_Beginner.py) |
 
-### Result
+### Results
 
 The participant with the highest 10k step goal achievement rate is participant 7359, with a success rate of 94.83%.
 
