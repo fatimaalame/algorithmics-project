@@ -45,3 +45,8 @@ The fake dataset confirms that the algorithm works correctly, because the baseli
 ### Note about debugging :)
 At first, the code did not work correctly because I was reading the wrong columns from the CSV file. I had to check the structure of the dataset again and remember that index 0 is the date, and index 1 is the number of steps. After fixing the column indexes, the grouping and sorting logic worked as expected. This helped me understand that even if the algorithm is correct, the result can still be wrong if the input data is not read properly. 
 
+
+## Notice on the use of AI tools
+I used AI tools during this project to help me understand the course material, debug some (a lot actually) Python errors, add more structured comments but also check if my algorithms matched the expected project level (very important).
+AI was also very useful for reformulating my documentation, especially the README. It helped make my explanations clearer and way more structured while keeping the content based on me trying to explain all I did. 
+The ones I used: GPT thinking 5.5 + Claude Sonnet 4.6
