@@ -1,5 +1,7 @@
 # Analysis 2: Top 5 active days per participant
 
+import pandas as pd
+
 
 #df y3ne = receive the CSV
 def group_days_by_participant(df):
@@ -123,3 +125,153 @@ def top_k_days_improved(df, k=5):
 
     return result
 
+
+def top_k_days_builtin(df, k=5):
+    #This version uses Python's built-in sorted()
+    #I use it to compare my own sorting algorithm with a built-in function
+    days_by_participant = group_days_by_participant(df)
+
+    result = {}
+
+    for participant in days_by_participant:
+        days = days_by_participant[participant]
+
+        sorted_days = sorted(days, key=lambda day: day[1], reverse=True)
+
+        result[participant] = sorted_days[:k]
+
+    return result
+
+
+
+######### TESTS #############
+
+
+def run_fake_dataset_tests():
+    #First: test with a small fake dataset
+    test_data = {
+        "participant_id": ["A", "A", "A", "A", "A", "A", "B", "B", "B"],
+        "DATE": [
+            "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+            "Mon", "Tue", "Wed"
+        ],
+        "ACTIVITY_steps": [
+            8000, 12000, 6000, 15000, 9000, 11000,
+            3000, 7000, 10000
+        ],
+    }
+
+    df_test = pd.DataFrame(test_data)
+
+    baseline_result = top_k_days_baseline(df_test, k=3)
+    improved_result = top_k_days_improved(df_test, k=3)
+    builtin_result = top_k_days_builtin(df_test, k=3)
+
+    print("Baseline result:")
+    print(baseline_result)
+
+    print("\nImproved result:")
+    print(improved_result)
+    print("\nBuilt-in sorted result:")
+    print(builtin_result)
+
+    #Simple fake dataset tests
+    expected_A = [("Thu", 15000), ("Tue", 12000), ("Sat", 11000)]
+    expected_B = [("Wed", 10000), ("Tue", 7000), ("Mon", 3000)]
+
+    assert baseline_result["A"] == expected_A
+    assert baseline_result["B"] == expected_B
+    assert improved_result["A"] == expected_A
+    assert improved_result["B"] == expected_B
+    assert builtin_result["A"] == expected_A
+    assert builtin_result["B"] == expected_B
+
+    #The three approaches should return the same result btw
+    assert baseline_result == improved_result
+    assert baseline_result == builtin_result
+
+    #Edge case: participant with fewer days than k
+    test_data_small = {
+        "participant_id": ["C", "C"],
+        "DATE": ["Mon", "Tue"],
+        "ACTIVITY_steps": [5000, 8000],
+    }
+    df_small = pd.DataFrame(test_data_small)
+    result_small = top_k_days_improved(df_small, k=5)
+    # C only has 2 days, so we expect 2 results max (not 5)
+    assert len(result_small["C"]) == 2
+    print("Edge case test passed (fewer days than k).")
+
+    print("\nFake dataset tests passed.")
+
+
+def run_real_dataset_check():
+    #Now I test with the real merged dataset
+    real_df = pd.read_csv("data/merged.csv")
+
+    real_baseline = top_k_days_baseline(real_df, k=5)
+    real_improved = top_k_days_improved(real_df, k=5)
+    real_builtin = top_k_days_builtin(real_df, k=5)
+
+    #The baseline and improved version should return the same step counts
+    for participant in real_baseline:
+        baseline_steps = []
+        improved_steps = []
+        builtin_steps = []
+
+        for day in real_baseline[participant]:
+            baseline_steps.append(day[1])
+
+        for day in real_improved[participant]:
+            improved_steps.append(day[1])
+
+        for day in real_builtin[participant]:
+            builtin_steps.append(day[1])
+
+        #We only compare step counts, not dates
+        #because ties in steps can produce different but equally valid orderings
+        assert baseline_steps == improved_steps
+        assert baseline_steps == builtin_steps
+
+    print("Real dataset check passed.")
+
+    print("\nExample result for participant 7359:")
+    print(real_improved[7359])
+    print("\n")
+
+
+def run_builtin_sorted_check():
+    #Small direct check with only a list of days
+    #Baseline = my insertion sort
+    #Built-in = Python sorted()
+    test_days = [("Mon", 3000), ("Tue", 12000), ("Wed", 7000)]
+
+    baseline_result = insertion_sort_days_by_steps(test_days)
+    builtin_result = sorted(test_days, key=lambda day: day[1], reverse=True)
+    
+    assert baseline_result == builtin_result
+
+    print("Built-in sorted comparison passed.")
+
+
+def run_failing_test():
+    #This test is intentionally wrong !
+    #The algorithm sorts from highest steps to lowest steps,
+    #but here I pretend that the smallest value should come first
+    test_days = [("Mon", 3000), ("Tue", 12000), ("Wed", 7000)]
+
+    result = insertion_sort_days_by_steps(test_days)
+
+    assert result == [
+        ("Mon", 3000),
+        ("Wed", 7000),
+        ("Tue", 12000)
+    ], "Failing test: this is wrong because the algorithm sorts in descending order."
+
+
+if __name__ == "__main__":
+    run_fake_dataset_tests()
+    run_real_dataset_check()
+    run_builtin_sorted_check()
+    #run_failing_test()
+    #I put it in a comment, you just have to remove it and it'll give you the AssertionError :)

@@ -104,6 +104,6 @@ print("All beginner tests passed!")
 print("\n")
 
 #Have to add the failing test (intentionally wrong btw)
-assert rates["A"] == 100.0, "Test failed: A should NOT be 100%" 
-print("This line will NOT be reached")
+#assert rates["A"] == 100.0, "Test failed: A should NOT be 100%" 
+#This line will NOT be reached
  

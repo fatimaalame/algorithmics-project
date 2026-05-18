@@ -27,18 +27,33 @@ The participant with the highest 10k step goal achievement rate is participant 7
 # Analysis 2: Top 5 active days per participant
 
 | Field | My answer |
-|---|---|
-| Problem I want to solve | What are the 5 most active days for each participant, based on the number of steps? |
-| Algorithm I will use | First, I group the days by participant with a dictionary. The participant id is the key, and the value is a list of days with the date and the step count. Then, for each participant, I sort the days by steps in descending order and keep the first 5 days. For the baseline, I use insertion sort because we saw it in class and it is easy to follow. |
-| Why this algorithm is appropriate | I need to separate the data by participant first, so a dictionary makes sense. Then I need to order the days from the most active to the least active. Insertion sort is not the fastest option, but it is simple and clear for a first version. The weak point is that it sorts all the days, even though I only need the top 5. |
-| Expected time complexity | Grouping the data is O(n), where n = nb of rows. Then insertion sort is O(d²) for each participant, where d = nb of days for one participant. So overall, the baseline is around O(n + p × d²), where p = nb of participants. |
-| Expected space complexity | O(n), because I store the days grouped by participant before sorting them. |
-| How I tested | I tested with a small fake dataset first, so I could check the result by hand. I checked that each participant had the right days, that the result had maximum 5 days, and that the days were sorted from highest steps to lowest steps. |
-| Python file | src/A2_Intermediate.py AND src/A2_Test.py |
 
-### Result
-This analysis gives the 5 days with the highest number of steps for each participant. For the baseline, I used insertion sort. I sort all the days of a participant by step count in descending order, then I take the first five days. This works and it is close to the course, but it is not the most efficient because I sort the whole list even though I only need five days.
+|---|---|
+
+| Problem I want to solve | What are the 5 most active days for each participant, based on the number of steps? |
+
+| Algorithm I will use | I compare two approaches. The baseline groups the days by participant, sorts all days with insertion sort, and keeps the first 5 days. The improved approach uses a top-k selection strategy: it scans the days once and only keeps a small sorted list of the best k days. |
+
+| Why this algorithm is appropriate | It's because I compare a baseline approach with an improved approach. The baseline is simple and close to the course, but it sorts all days. The improved version is better because I only need the top 5 days, so I keep only a small top-k list instead of sorting everything. |
+
+| Expected time complexity | Grouping the data is O(n), where n = number of rows. For the baseline, insertion sort is O(d²) for each participant, where d = number of days for one participant. For the improved version, the complexity is O(d × k) for each participant, because I scan the days and maintain a small list of size k. Since k = 5, this is close to O(d). |
+
+| Expected space complexity | The grouping step uses O(n), because I store the days grouped by participant. The baseline also stores a sorted copy of the days. The improved version only keeps a small top-k list for each participant while scanning. |
+
+| How I tested | I tested with a small fake dataset first, so I could check the result by hand. I compared the baseline version, the improved version, and Python's built-in sorted version. I also tested the real dataset, an edge case where a participant has fewer days than k, and I included an intentionally failing test in the code but left it commented out. |
+
+| Python file | Analysis/A2_Intermediate.py |
+
+### Results
+The different tests dataset confirm that the algorithm works as expected :)  (they all got the same results)
+
+### Interpretation
+The fake dataset confirms that the algorithm works correctly, because the baseline, improved, and built-in sorted versions all return the same top days.
+
+For the real dataset, participant 7359 has the highest activity on 01.11.21 with 27416 steps. The top 5 days are all above 22000 steps, which shows several strong activity peaks.
+
+The improved version gives the same result as the baseline, but avoids sorting all days. This makes sense because I only need the top 5 days, not the full sorted list.
 
 ### Note about debugging :)
-At first, the code did not work correctly because I was reading the wrong columns from the CSV file. I had to check the structure of the dataset again and remember that index 0 is the date, and index 1 is the number of steps. After fixing the column indexes, the grouping and sorting logic worked as expected. This helped me understand that even if the algorithm is correct, the result can still be wrong if the input data is not read properly.
+At first, the code did not work correctly because I was reading the wrong columns from the CSV file. I had to check the structure of the dataset again and remember that index 0 is the date, and index 1 is the number of steps. After fixing the column indexes, the grouping and sorting logic worked as expected. This helped me understand that even if the algorithm is correct, the result can still be wrong if the input data is not read properly. 
 
