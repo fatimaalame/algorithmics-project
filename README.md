@@ -46,7 +46,29 @@ The fake dataset confirms that the algorithm works correctly, because the baseli
 At first, the code did not work correctly because I was reading the wrong columns from the CSV file. I had to check the structure of the dataset again and remember that index 0 is the date, and index 1 is the number of steps. After fixing the column indexes, the grouping and sorting logic worked as expected. This helped me understand that even if the algorithm is correct, the result can still be wrong if the input data is not read properly. 
 
 
-## Notice on the use of AI tools
+
+# BONUS - Analysis 3: Longest streak 10k steps
+
+| Field | My answer |
+|---|---|
+| Problem I want to solve | Which participant has the longest consecutive streak of days with at least 10k steps? |
+| Algorithm I will use | First, I group the days by participant with a dictionary. Then, for each participant, I sort the days by date so I can read them in chronological order. After that, I scan the days one by one and keep two values: the current streak and the longest streak found so far. |
+| Why this algorithm is appropriate | This problem is about consistency over time, not just one isolated high value. I need to check if active days follow each other without a gap. The scan is appropriate because each participant's days can be checked in order, and the streak can be updated step by step. This is a DP-style idea because the current result depends on the streak computed just before. |
+| Expected time complexity | For each participant, sorting the days by date costs O(d log d), where d = number of days for one participant. Then scanning the sorted days costs O(d). So the total is dominated by the sorting step. |
+| Expected space complexity | The grouping step uses O(n), because I store the days grouped by participant. During the streak scan, I only keep a few variables like current_streak and longest_streak, so the extra space for the scan is O(1). |
+| How I tested | I tested with a fake dataset where I could calculate the streaks by hand. I also added edge cases: a participant with no active days, and a missing calendar day that should break the streak. Finally, I tested the algorithm on the real merged dataset. |
+| Python file | [Analysis/A3_Advanced.py](Analysis/A3_Advanced.py) |
+
+### Results
+The fake dataset tests passed. Participant A has a longest streak of 3 days, and participant B has a longest streak of 2 days. On the real dataset, the participant with the longest 10k-step streak is participant 7359, with a streak of 36 consecutive active days.
+
+### Interpretation
+This result shows that participant 7359 is not only active on isolated days, but also has the strongest regularity over time. A streak of 36 days means that this participant reached at least 10k steps every day for more than one month.
+
+# In conclusion
+This analysis (A3) is different from A1 and A2 because it focuses on consecutive behavior. A1 measures the general success rate, A2 finds the highest activity peaks, and A3 checks long-term consistency.
+
+# Notice on the use of AI tools
 I used AI tools during this project to help me understand the course material, debug some (a lot actually) Python errors, add more structured comments but also check if my algorithms matched the expected project level (very important).
 AI was also very useful for reformulating my documentation, especially the README. It helped make my explanations clearer and way more structured while keeping the content based on me trying to explain all I did. 
 The ones I used: GPT thinking 5.5 + Claude Sonnet 4.6
