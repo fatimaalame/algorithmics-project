@@ -17,7 +17,7 @@ I'm working with real smartwatch data (provided by the uni) and using Python to 
 | Expected time complexity | O(n + p), usually simplified to O(n), where n = nb of rows and p = nb of participants. |
 | Expected space complexity | O(p), because the algorithm stores counters and rates for each participant. |
 | How I tested | I tested the function on a small fake dataset where the expected result can be calculated by hand but I also tested it on the real merged dataset and checked that the final percentage is between 0 and 100. |
-| Python file | src/A1_Beginner.py AND src/A1_Test.py |
+| Python file | Analysis/A1_Beginner.py |
 
 ### Result
 
