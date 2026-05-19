@@ -4,7 +4,105 @@
 Fatima Alame (22-836-563)
 
 ## Project context
+
 I'm working with real smartwatch data (provided by the uni) and using Python to explore daily activity patterns. The goal is not only to read the dataset, but also to apply the algorithmic ideas we got in class to a concrete way. I focus on writing simple functions, using loops and dictionaries, testing my code, and explaining why each algorithm made sense to me.
+
+
+## Data instructions
+
+Before running the project, the dataset must be placed in this folder:
+
+```text
+data/
+```
+
+The expected file path is:
+
+```text
+data/merged.csv
+```
+
+The scripts expect the dataset to contain at least these columns:
+
+```text
+DATE
+DAY_OF_THE_WEEK
+ACTIVITY_steps
+```
+
+The dataset also needs a participant identifier column, used to group the data by participant.
+
+If `merged.csv` is missing or placed in another folder, the scripts will not be able to load the data correctly.
+
+## Installation
+
+This project uses Python. A virtual environment can be used to keep the project dependencies separate from the rest of the computer.
+
+On macOS, the virtual environment can be activated with:
+
+```bash
+source venv/bin/activate
+```
+
+Then the required packages can be installed with:
+
+```bash
+pip install -r requirements.txt
+```
+
+## How to run the project
+
+The code should be executed from the root folder of the repository.
+
+Example:
+
+```bash
+cd projet_AA
+```
+
+Then each analysis can be run separately.
+
+To run Analysis 1:
+
+```bash
+python Analysis/A1_Beginner.py
+```
+
+To run Analysis 2:
+
+```bash
+python Analysis/A2_Intermediate.py
+```
+
+To run Analysis 3:
+
+```bash
+python Analysis/A3_Advanced.py
+```
+
+Each script prints its result directly in the terminal (because I included the tests right in the files themselves)
+
+## How to read the results
+
+The three analyses answer different questions.
+
+Analysis 1 answers:
+
+```text
+Who reaches the 10,000-step goal most often?
+```
+
+Analysis 2 answers:
+
+```text
+What are the highest-activity days for each participant?
+```
+
+Analysis 3 answers:
+
+```text
+Who keeps an active routine over consecutive days?
+```
 
 
 # Analysis 1: 10k steps goal achievement %

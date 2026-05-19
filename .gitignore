@@ -6,6 +6,7 @@ documentation/
 researchdata/
 Yareta-datacite.xml
 Yareta_data_download/
+data_merged.csv/
 
 # Python virtual environments
 .venv/
