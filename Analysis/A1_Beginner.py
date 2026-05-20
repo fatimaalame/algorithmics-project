@@ -4,7 +4,7 @@
 # fonction 2 = cherche le meilleur pourcentage
 
 # pandas = to manipulate tableau CSV
-import pandas as pd 
+import pandas as pd
 
 
 def calculate_10k_goal_rate(df):
@@ -12,11 +12,15 @@ def calculate_10k_goal_rate(df):
     total_days = {}   #count days
     goal_days = {}    #count days with >= 10000 pas 
 
-    #Go through the dataset row by row
+    # Go through the dataset row by row
     for index, row in df.iterrows():
         participant = row["participant_id"]  #récupère id + ses pas 
         steps = row["ACTIVITY_steps"]
 
+        # Edge case: skip incomplete rows
+        if pd.isna(participant) or pd.isna(steps): 
+            continue 
+        
         #First time we see this participant then create counters from 0
         if participant not in total_days:
             total_days[participant] = 0
@@ -43,11 +47,11 @@ def calculate_10k_goal_rate(df):
 # This is a linear search for the maximum
 
 def find_best_participant(rates):
-    #At the start, we dont know who is the best participant
+    # At the start, we dont know who is the best participant
     best_participant = None
     best_rate = -1
 
-    #We look at each participant and their rate, in the dictionary 
+    # We look at each participant and their rate, in the dictionary 
     for participant in rates:
         if rates[participant] > best_rate:
             best_rate = rates[participant] #Then on remplace
@@ -58,52 +62,57 @@ def find_best_participant(rates):
 
 ################ PARTIE TEST #########
 
-import pandas as pd
+if __name__ == "__main__":
 
-from A1_Beginner import calculate_10k_goal_rate
-from A1_Beginner import find_best_participant
+    # First, Id like to test with fake dataset to check if my algorithm works
+    test_data = {
+        "participant_id": ["A", "A", "B", "B"],
+        "ACTIVITY_steps": [12000, 5000, 11000, 13000],
+    }
 
+    df_test = pd.DataFrame(test_data)
 
-# First, Id like to test with fake dataset to check if my algorithm works
-test_data = {
-    "participant_id": ["A", "A", "B", "B"],
-    "ACTIVITY_steps": [12000, 5000, 11000, 13000],
-}
+    rates = calculate_10k_goal_rate(df_test)
+    best_participant, best_rate = find_best_participant(rates)
 
-df_test = pd.DataFrame(test_data)
+    print("\nFakeData")
+    print("Rates:", rates)
+    print("Best participant:", best_participant)
+    print("Best rate:", best_rate)
 
-rates = calculate_10k_goal_rate(df_test)
-best_participant, best_rate = find_best_participant(rates)
+    # Simple tests on the fake dataset
+    assert rates["A"] == 50.0
+    assert rates["B"] == 100.0
+    assert best_participant == "B"
+    assert best_rate == 100.0
 
-print("\nFakeData")
-print("Rates:", rates)
-print("Best participant:", best_participant)
-print("Best rate:", best_rate)
+    # Edge case: 0 steps counts as a real day, but not as a 10k-step day
+    zero_steps_data = {
+        "participant_id": ["A", "A"],
+        "ACTIVITY_steps": [0, 10000],
+    }
 
-#Simple tests on the fake dataset
-assert rates["A"] == 50.0  # Check if the rate of A is 50%
-assert rates["B"] == 100.0  # Check if the rate of B is 100%
-assert best_participant == "B"
-assert best_rate == 100.0
+    zero_steps_df = pd.DataFrame(zero_steps_data)
+    zero_rates = calculate_10k_goal_rate(zero_steps_df)
 
-#Now I test the same functions with the real dataset.
-real_df = pd.read_csv("data/merged.csv")
+    assert zero_rates["A"] == 50.0
 
-real_rates = calculate_10k_goal_rate(real_df)
-real_best_participant, real_best_rate = find_best_participant(real_rates)
+    # Now I test the same functions with the real dataset.
+    real_df = pd.read_csv("data/merged.csv")
 
-print("\nReal dataset result:")
-print("Best participant:", real_best_participant)
-print("Best rate:", real_best_rate)
+    real_rates = calculate_10k_goal_rate(real_df)
+    real_best_participant, real_best_rate = find_best_participant(real_rates)
 
-# Real dataset sanity checks
-assert real_best_rate >= 0
-assert real_best_rate <= 100
+    print("\nReal dataset result:")
+    print("Best participant:", real_best_participant)
+    print("Best rate:", real_best_rate)
 
-print("All beginner tests passed!")
-print("\n")
+    # Real dataset sanity checks
+    assert real_best_rate >= 0
+    assert real_best_rate <= 100
 
-#Have to add the failing test (intentionally wrong btw)
-#assert rates["A"] == 100.0, "Test failed: A should NOT be 100%" 
-#This line will NOT be reached
- 
+    print("All beginner tests passed!")
+    print("\n")
+
+    # Have to add the failing test intentionally wrong
+    # assert rates["A"] == 100.0, "Test failed: A should NOT be 100%"
