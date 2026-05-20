@@ -5,7 +5,7 @@ Fatima Alame (22-836-563)
 
 ## Project context
 
-I'm working with real smartwatch data (provided by the uni) and using Python to explore daily activity patterns. The goal is not only to read the dataset, but also to apply the algorithmic ideas we got in class to a concrete way. I focus on writing simple functions, using loops and dictionaries, testing my code, and explaining why each algorithm made sense to me.
+I'm working with real smartwatch data (provided by the uni) and using Python to explore daily activity patterns. The goal is not only to read the dataset, but also to apply the algorithmic ideas we got in class in a concrete way. I focus on writing simple functions, using loops and dictionaries, testing my code, and explaining why each algorithm made sense to me.
 
 
 ## Data instructions
@@ -21,6 +21,7 @@ The expected file path is:
 ```text
 data/merged.csv
 ```
+-> The original private dataset is not included in the GitLab repository. It has to stay local on the computer. In my project, the scripts expect a local file called data/merged.csv
 
 The scripts expect the dataset to contain at least these columns:
 
@@ -38,9 +39,10 @@ If `merged.csv` is missing or placed in another folder, the scripts will not be 
 
 This project uses Python. A virtual environment can be used to keep the project dependencies separate from the rest of the computer.
 
-On macOS, the virtual environment can be activated with:
+On macOS, the virtual environment can be created/activated with:
 
 ```bash
+python -m venv venv
 source venv/bin/activate
 ```
 
@@ -104,6 +106,11 @@ Analysis 3 answers:
 Who keeps an active routine over consecutive days?
 ```
 
+## Tests
+I included simple assert tests directly in the analysis files. They check normal cases and some edge cases.
+
+I also added intentionally failing tests, as requested in the  instructions but I left them commented out so the files can still run normally. If you'd like to see them fail, you can  remove the # before the failing assert and run the file again.
+
 
 # Analysis 1: 10k steps goal achievement %
 
@@ -111,7 +118,7 @@ Who keeps an active routine over consecutive days?
 |---|---|
 | Problem I want to solve | Which participant reaches the 10k step goal most consistently? |
 | Algorithm I will use | I use a linear scan through all the rows of the dataset. For each participant, I count the total number of recorded days and the number of days where they reached at least 10k steps. Then I calculate the success rate for each participant and scan the results to find the highest rate. |
-| Why this algorithm is appropriate | This is a simple counting problem. Each row only needs to be checked once, so a linear scan is enough I guess. Dictionaries are useful because each participant can be stored as a key, with their counters as values. I chose a percentage instead of only counting days because participants may not all have the same number of recorded days (so that'd be cheating for some participants). |
+| Why this algorithm is appropriate | This is a simple counting problem. Each row only needs to be checked once, so a linear scan is enough. Dictionaries are useful because each participant can be stored as a key, with their counters as values. I chose a percentage instead of only counting days because participants may not all have the same number of recorded days (so that'd be cheating for some participants). |
 | Expected time complexity | O(n + p), usually simplified to O(n), where n = nb of rows and p = nb of participants. |
 | Expected space complexity | O(p), because the algorithm stores counters and rates for each participant. |
 | How I tested | I tested the function on a small fake dataset where the expected result can be calculated by hand but I also tested it on the real merged dataset and checked that the final percentage is between 0 and 100. |
@@ -135,7 +142,7 @@ The participant with the highest 10k step goal achievement rate is participant 7
 | Python file | [Analysis/A2_Intermediate.py](Analysis/A2_Intermediate.py) |
 
 ### Results
-The different tests dataset confirm that the algorithm works as expected :)  (they all got the same results)
+All three versions (baseline, improved, built-in) return identical results on both the fake and real datasets.
 
 ### Interpretation
 The fake dataset confirms that the algorithm works correctly, because the baseline, improved, and built-in sorted versions all return the same top days. For the real dataset, participant 7359 has the highest activity on 01.11.21 with 27416 steps. The top 5 days are all above 22000 steps, which shows several strong activity peaks. The improved version gives the same result as the baseline, but avoids sorting all days. This makes sense because I only need the top 5 days, not the full sorted list.
@@ -145,13 +152,15 @@ At first, the code did not work correctly because I was reading the wrong column
 
 
 
-# BONUS - Analysis 3: Longest streak 10k steps
+# Bonus Analysis 3: Longest streak 10k steps
+
+This analysis is optional but I did it because it studies consistency over consecutive days.
 
 | Field | My answer |
 |---|---|
 | Problem I want to solve | Which participant has the longest consecutive streak of days with at least 10k steps? |
 | Algorithm I will use | First, I group the days by participant with a dictionary. Then, for each participant, I sort the days by date so I can read them in chronological order. After that, I scan the days one by one and keep two values: the current streak and the longest streak found so far. |
-| Why this algorithm is appropriate | This problem is about consistency over time, not just one isolated high value. I need to check if active days follow each other without a gap. The scan is appropriate because each participant's days can be checked in order, and the streak can be updated step by step. This is a DP-style idea because the current result depends on the streak computed just before. |
+| Why this algorithm is appropriate | This problem is about consistency over time, not just one isolated high value. I need to check if active days follow each other without a gap. The scan is appropriate because each participant's days can be checked in order, and the streak can be updated step by step. This is close to a dynamic-programming idea (took the idea from course 4, exo 5), because the current streak is computed from the previous streak. However, in the implementation, it stays simple: I only keep the current streak and the best streak found so far. |
 | Expected time complexity | For each participant, sorting the days by date costs O(d log d), where d = number of days for one participant. Then scanning the sorted days costs O(d). So the total is dominated by the sorting step. |
 | Expected space complexity | The grouping step uses O(n), because I store the days grouped by participant. During the streak scan, I only keep a few variables like current_streak and longest_streak, so the extra space for the scan is O(1). |
 | How I tested | I tested with a fake dataset where I could calculate the streaks by hand. I also added edge cases: a participant with no active days, and a missing calendar day that should break the streak. Finally, I tested the algorithm on the real merged dataset. |
@@ -168,5 +177,4 @@ This analysis (A3) is different from A1 and A2 because it focuses on consecutive
 
 # Notice on the use of AI tools
 I used AI tools during this project to help me understand the course material, debug some (a lot actually) Python errors, add more structured comments but also check if my algorithms matched the expected project level (very important).
-AI was also very useful for reformulating my documentation, especially the README. It helped make my explanations clearer and way more structured while keeping the content based on me trying to explain all I did. 
-The ones I used: GPT thinking 5.5 + Claude Sonnet 4.6
+AI was also very useful for reformulating my documentation, especially the README. It helped make my explanations clearer and way more structured while keeping the content based on me trying to explain all I did. I used: GPT thinking 5.5 + Claude Sonnet 4.6
